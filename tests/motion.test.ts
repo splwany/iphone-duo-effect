@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { TiltTracker as Tracker } from "../src/engine/TiltTracker";
+import { TiltTracker as Tracker } from "../src/sdk/inputs/TiltTracker";
 function calibrated() {
   const t = new Tracker();
   t.start();

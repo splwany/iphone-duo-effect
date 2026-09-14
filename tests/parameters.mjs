@@ -13,9 +13,10 @@ try {
       (await readFile(process.env.PARAM_BASELINE)).toString("base64")
     : null;
   const result = await page.evaluate(async (baselinePng) => {
-    const { DepthRenderer } = await import("/src/engine/DepthRenderer.ts");
+    const { DepthRenderer } =
+      await import("/src/sdk/rendering/DepthRenderer.ts");
     const { effects, effectValue } = await import("/src/config/effects.ts");
-    const { rasterizeImage } = await import("/src/engine/image.ts");
+    const { rasterizeImage } = await import("/src/sdk/image.ts");
     const sample = new Image();
     sample.src = "/sample.svg";
     await sample.decode();
@@ -42,7 +43,9 @@ try {
       return p;
     };
     const reset = () =>
-      effects.forEach((e) => (renderer[e.property] = effectValue(e, 50)));
+      effects.forEach(
+        (e) => (renderer.parameters[e.property] = effectValue(e, 50)),
+      );
     const difference = (a, b) => {
       let sum = 0,
         n = 0,
@@ -76,7 +79,7 @@ try {
         reset();
         const images = [];
         for (const percent of [0, 50, 100]) {
-          renderer[e.property] = effectValue(e, percent);
+          renderer.parameters[e.property] = effectValue(e, percent);
           renderer.draw(angle / 90);
           images.push(read());
           if (angle === 45) {
@@ -115,7 +118,7 @@ try {
     const edge = effects.find((e) => e.property === "edgeSoftness");
     const pixels = [];
     for (const percent of [0, 50, 100]) {
-      renderer.edgeSoftness = effectValue(edge, percent);
+      renderer.parameters.edgeSoftness = effectValue(edge, percent);
       renderer.draw(0.5);
       pixels.push(read());
     }

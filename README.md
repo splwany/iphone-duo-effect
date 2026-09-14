@@ -17,6 +17,8 @@ npm run dev
 
 ```sh
 npm test              # 体感算法、参数映射与存储迁移回归
+npm run build:sdk     # 构建独立 Web 效果模块和类型声明
+npm run test:sdk      # 独立接口浏览器回归（开发服务 + Chrome）
 npm run typecheck     # 严格 TypeScript 检查
 npm run build         # 类型检查并构建 dist/
 npm run preview       # 本地预览构建结果
@@ -28,10 +30,12 @@ npm run test:parameters # 开发服务 8765 + Chrome：逐项参数和动态响�
 ## 工程结构
 
 - `src/components/`：预览、参数滑块和操作面板 React 组件。
-- `src/config/effects.ts`：11 项参数的标签、范围、存储键和旧值迁移。
-- `src/engine/experience.ts`：动画帧、导图、体感权限与沉浸布局的生命周期控制。
-- `src/engine/TiltTracker.ts`：重力校准与角度跟踪。
-- `src/engine/DepthRenderer.ts`：WebGL 2 渲染与 GPU 资源释放。
+- `src/sdk/`：不依赖 React 的公共效果模块，包含输入映射、平滑状态、参数与 WebGL 渲染。
+- `src/sdk/index.ts`：外部接入入口；`defaults.json`：11 项参数的默认配置。
+- `src/config/effects.ts`：演示页标签、滑杆百分比和旧存储迁移。
+- `src/engine/experience.ts`：组合演示页面的体感权限、导图和交互。
+- `src/engine/effectControls.ts`：参数控件与偏好存储。
+- `src/engine/immersive.ts`：Safari 沉浸布局与退出恢复。
 - `src/styles/style.css`：保留原版规则及覆盖顺序，避免布局变化。
 - `public/`：示例、图标和主屏幕 manifest。
 - `tests/`：自动化回归。
@@ -40,6 +44,12 @@ React 管理页面结构；每帧绘制及已验证的 Safari 沉浸节点移动
 浏览器回归默认访问 8765 端口；可通过 `APP_URL` 指定预览服务，通过 `BASELINE_URL` 指定原版服务以启用逐像素对比。验证记录见 [重构验证](docs/REFACTOR.md)。
 
 组件卸载或热更新会取消动画、事件订阅和定时器，释放观察器、图片 URL 与 GPU 资源。
+
+## 独立 Web 接入
+
+效果支持通用进度、效果角度和可配置的铰链角度映射；重力感应是一种可选输入适配器。所有参数可通过构造配置、JSON 默认配置及运行时方法修改。
+
+详见 [Web 模块接口与示例](docs/WEB-SDK.md)。启动开发服务后访问 `/examples/basic.html` 可运行独立接入示例。
 
 ## GitHub Pages 部署
 

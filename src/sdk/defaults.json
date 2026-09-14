@@ -1,0 +1,13 @@
+{
+  "blurStrength": 0.1,
+  "horizontalStretch": 0.9,
+  "farShrink": 0.13,
+  "blurCurve": 2,
+  "scatterFocus": 2,
+  "scatterX": 2,
+  "scatterY": 1,
+  "grazingRange": 0.5,
+  "edgeSoftness": 1,
+  "blurBlend": 0.7,
+  "followSmooth": 35
+}

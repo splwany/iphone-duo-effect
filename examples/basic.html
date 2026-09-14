@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>独立 Web 效果接入示例</title>
+    <style>
+      body {
+        margin: 24px;
+        font: 16px system-ui;
+        color: #eee;
+        background: #101217;
+      }
+      main {
+        max-width: 420px;
+        margin: auto;
+      }
+      #preview {
+        position: relative;
+        width: 180px;
+        height: 390px;
+        margin: 24px auto;
+        background: #000;
+      }
+      label {
+        display: block;
+        margin: 24px 0;
+      }
+      input {
+        display: block;
+        width: 100%;
+        margin-top: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>独立 Web 效果</h1>
+      <p>拖动滑杆模拟铰链角度：180° 展平，0° 合拢。</p>
+      <div id="preview"></div>
+      <label
+        >铰链角度 <output id="angle">180°</output
+        ><input id="hinge" type="range" min="0" max="180" value="180"
+      /></label>
+      <label
+        >模糊强度
+        <input id="blur" type="range" min="0" max="0.2" step="0.01" value="0.1"
+      /></label>
+      <p id="status"></p>
+    </main>
+    <script type="module">
+      import { createFoldEffect, createHingeMapper } from "../src/sdk/index.ts";
+      import defaults from "../src/sdk/defaults.json";
+
+      const effect = createFoldEffect(document.querySelector("#preview"), {
+        parameters: defaults,
+      });
+      const mapHinge = createHingeMapper({ flatAngle: 180, foldedAngle: 0 });
+      const status = document.querySelector("#status");
+      if (!effect.supported)
+        status.textContent = "当前浏览器无法使用 WebGL 2。";
+
+      const image = new Image();
+      image.src = "/sample.svg";
+      try {
+        await image.decode();
+        effect.setImage(image);
+      } catch {
+        status.textContent = "示例图片读取失败。";
+      }
+
+      effect.connectInput((setProgress) => {
+        const input = document.querySelector("#hinge");
+        const update = () => {
+          document.querySelector("#angle").value = `${input.value}°`;
+          setProgress(mapHinge(Number(input.value)));
+        };
+        input.addEventListener("input", update);
+        return () => input.removeEventListener("input", update);
+      });
+      document.querySelector("#blur").addEventListener("input", (event) => {
+        effect.setParameters({ blurStrength: Number(event.target.value) });
+      });
+      window.addEventListener("pagehide", () => effect.dispose(), {
+        once: true,
+      });
+    </script>
+  </body>
+</html>

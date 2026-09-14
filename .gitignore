@@ -11,3 +11,5 @@ dist/
 coverage/
 test-results/
 playwright-report/
+
+dist-sdk/

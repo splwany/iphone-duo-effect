@@ -1,4 +1,6 @@
-export const effects = [
+import { defaultParameters, parameterRanges } from "../sdk/parameters";
+
+const effectLabels = [
   {
     id: "blur-strength",
     label: "模糊强度",
@@ -7,10 +9,7 @@ export const effects = [
     property: "blurStrength",
     storageKey: "fold-blur-strength-v2",
     legacyKey: "fold-blur-strength",
-    minimum: 0.0,
-    midpoint: 0.1,
     previous: null,
-    maximum: 0.2,
   },
   {
     id: "horizontal-stretch",
@@ -20,14 +19,11 @@ export const effects = [
     property: "horizontalStretch",
     storageKey: "fold-horizontal-stretch-v3",
     legacyKey: "fold-horizontal-stretch",
-    minimum: 0,
-    midpoint: 0.9,
     previous: {
       storageKey: "fold-horizontal-stretch-v2",
       minimum: 0.8,
       maximum: 1,
     },
-    maximum: 1,
   },
   {
     id: "far-shrink",
@@ -37,10 +33,7 @@ export const effects = [
     property: "farShrink",
     storageKey: "fold-far-shrink-v2",
     legacyKey: "fold-far-shrink",
-    minimum: 0.0,
-    midpoint: 0.13,
     previous: null,
-    maximum: 0.26,
   },
   {
     id: "blur-curve",
@@ -50,10 +43,7 @@ export const effects = [
     property: "blurCurve",
     storageKey: "fold-blur-curve-v1",
     legacyKey: null,
-    minimum: 1.0,
-    midpoint: 2.0,
     previous: null,
-    maximum: 3.0,
   },
   {
     id: "scatter-focus",
@@ -63,10 +53,7 @@ export const effects = [
     property: "scatterFocus",
     storageKey: "fold-scatter-focus-v2",
     legacyKey: null,
-    minimum: 0,
-    midpoint: 2,
     previous: { storageKey: "fold-scatter-focus-v1", minimum: 0, maximum: 4 },
-    maximum: 24,
   },
   {
     id: "scatter-x",
@@ -76,10 +63,7 @@ export const effects = [
     property: "scatterX",
     storageKey: "fold-scatter-x-v1",
     legacyKey: null,
-    minimum: 0.0,
-    midpoint: 2.0,
     previous: null,
-    maximum: 4.0,
   },
   {
     id: "scatter-y",
@@ -89,10 +73,7 @@ export const effects = [
     property: "scatterY",
     storageKey: "fold-scatter-y-v1",
     legacyKey: null,
-    minimum: 0.0,
-    midpoint: 1.0,
     previous: null,
-    maximum: 2.0,
   },
   {
     id: "grazing-range",
@@ -102,10 +83,7 @@ export const effects = [
     property: "grazingRange",
     storageKey: "fold-grazing-range-v1",
     legacyKey: null,
-    minimum: 0.25,
-    midpoint: 0.5,
     previous: null,
-    maximum: 0.75,
   },
   {
     id: "edge-softness",
@@ -115,14 +93,11 @@ export const effects = [
     property: "edgeSoftness",
     storageKey: "fold-edge-softness-v2",
     legacyKey: null,
-    minimum: 0,
-    midpoint: 1,
     previous: {
       storageKey: "fold-edge-softness-v1",
       minimum: 0.5,
       maximum: 1.5,
     },
-    maximum: 12,
   },
   {
     id: "blur-blend",
@@ -132,10 +107,7 @@ export const effects = [
     property: "blurBlend",
     storageKey: "fold-blur-blend-v2",
     legacyKey: null,
-    minimum: 0,
-    midpoint: 0.7,
     previous: { storageKey: "fold-blur-blend-v1", minimum: 0.4, maximum: 1 },
-    maximum: 4,
   },
   {
     id: "follow-smooth",
@@ -145,12 +117,13 @@ export const effects = [
     property: "followSmooth",
     storageKey: "fold-follow-smooth-v2",
     legacyKey: null,
-    minimum: 10,
-    midpoint: 35,
     previous: { storageKey: "fold-follow-smooth-v1", minimum: 10, maximum: 60 },
-    maximum: 250,
   },
 ] as const;
+export const effects = effectLabels.map((effect) => ({
+  ...effect,
+  ...parameterRanges[effect.property],
+}));
 export type Effect = (typeof effects)[number];
 export type EffectProperty = Effect["property"];
 /** Two continuous segments retain the original 50% while opening useful extremes. */
@@ -194,5 +167,5 @@ export function readPercent(
     if (legacy !== null && Number.isFinite(Number(legacy)))
       return effectPercent(effect, Number(legacy) / 100);
   } catch {}
-  return 50;
+  return effectPercent(effect, defaultParameters[effect.property]);
 }
