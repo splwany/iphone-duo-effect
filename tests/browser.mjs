@@ -6,10 +6,37 @@ const url = process.env.APP_URL || "http://127.0.0.1:8765";
 const baseline = process.env.BASELINE_URL;
 const errors = [];
 async function open(base, viewport) {
-  const page = await browser.newPage({ viewport, deviceScaleFactor: 1 });
+  const page = await browser.newPage({
+    viewport,
+    deviceScaleFactor: Number(process.env.TEST_DPR || 1),
+  });
   page.on("pageerror", (error) => errors.push(error.message));
+  await page.addInitScript(() => {
+    window.textureUploads = [];
+    const original = WebGL2RenderingContext.prototype.texImage2D;
+    WebGL2RenderingContext.prototype.texImage2D = function (...args) {
+      const source = args[args.length - 1];
+      window.textureUploads.push({
+        canvas: source instanceof HTMLCanvasElement,
+        width: source.width,
+        height: source.height,
+      });
+      return original.apply(this, args);
+    };
+  });
   await page.goto(base);
   await page.waitForSelector("#fold canvas");
+  await page.waitForFunction(() => window.textureUploads.length > 0);
+  if (!baseline || base === url) {
+    const uploads = await page.evaluate(() => window.textureUploads);
+    assert(
+      uploads.every(
+        (upload) =>
+          upload.canvas && upload.width === 393 && upload.height === 852,
+      ),
+      "default sample must upload explicit 393×852 canvas pixels",
+    );
+  }
   await page.waitForTimeout(300);
   return page;
 }

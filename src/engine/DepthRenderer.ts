@@ -7,7 +7,7 @@ export class DepthRenderer {
   horizontalStretch: number;
   farShrink: number;
   amount: number;
-  image: HTMLImageElement | HTMLCanvasElement | null;
+  image: HTMLCanvasElement | null;
   blurCurve: number;
   scatterFocus: number;
   scatterX: number;
@@ -190,7 +190,7 @@ export class DepthRenderer {
       this.gl = null;
     }
   }
-  setImage(image: HTMLImageElement | HTMLCanvasElement) {
+  setImage(image: HTMLCanvasElement) {
     this.image = image;
     if (!this.gl) return;
     const gl = this.gl;

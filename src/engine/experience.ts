@@ -1,3 +1,4 @@
+import { rasterizeImage } from "./image";
 import { DepthRenderer } from "./DepthRenderer";
 import { TiltTracker } from "./TiltTracker";
 import { effects, effectValue, readPercent } from "../config/effects";
@@ -64,7 +65,7 @@ export function mountExperience() {
   );
 
   const sample = new Image();
-  sample.onload = () => renderer.setImage(sample);
+  sample.onload = () => renderer.setImage(rasterizeImage(sample));
   sample.src = `${import.meta.env.BASE_URL}sample.svg`;
   function status(message: string) {
     $("status").textContent = message;

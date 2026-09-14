@@ -35,3 +35,14 @@
 ## 验证边界
 
 桌面 Chrome 的手机尺寸模拟无法代替 iPhone Safari、主屏幕模式、真实体感权限、传感器及发热测试。仍需按 HANDOFF.md 的真机回归清单复核。
+
+## 首次加载示例缩小的兼容性修复
+
+现象：iPhone 偶发出现预览外框正常、示例缩在左上角，周围大面积黑色。
+代码检查发现默认示例直接将 SVG HTMLImageElement 上传 WebGL，而用户截图先绘入 canvas。
+现统一为明确像素尺寸的 canvas 纹理：示例按 naturalWidth/naturalHeight 绘制为 393×852，渲染器仅接受 canvas。
+这是针对 SVG 栅格化尺寸路径的兼容性修复；尚未在用户的 iPhone 上复现并确认浏览器内部根因。
+
+验证：10 项单元测试、生产构建通过；DPR 3 的桌面/手机尺寸浏览器回归通过，
+包括默认纹理来源和尺寸检查、刷新、导图、参数保存/重置及沉浸进出。
+可用 `TEST_DPR=3 npm run test:browser` 复测。
