@@ -95,10 +95,7 @@ try {
     );
     assert.equal(await page.locator("#app > #stage").count(), 1);
     await page.locator("#layout-details").click();
-    assert.match(
-      await page.locator("#layout-info").textContent(),
-      /全参数精调 23/,
-    );
+    assert.match(await page.locator("#layout-info").textContent(), /显示信息/);
     await page.close();
     await old?.close();
   }

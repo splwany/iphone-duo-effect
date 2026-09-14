@@ -58,7 +58,7 @@ export function mountExperience() {
     "click",
     () => {
       effectResets.forEach((reset) => reset());
-      status("已恢复默认效果：所有效果参数均为 50%。");
+      status("已恢复默认效果。");
     },
     { signal },
   );
@@ -93,7 +93,7 @@ export function mountExperience() {
     (e) => {
       pause();
       target = (Number((e.target as HTMLInputElement).value) - 50) / 50;
-      status("手动体验中。点“开启体感”可切回左右倾斜。");
+      status("手动体验中，点击“开启体感”可切换。");
     },
     { signal },
   );
@@ -105,7 +105,7 @@ export function mountExperience() {
     tracker.start();
     target = 0;
     measuredAngle = 0;
-    status("正在校准：保持你习惯的握持姿势，握稳约 1 秒…");
+    status("正在校准，请握稳约 1 秒…");
     $("calibrate").textContent = $("calibrate-full").textContent =
       "握稳校准中…";
   }
@@ -136,12 +136,11 @@ export function mountExperience() {
         performance.now(),
       );
       lastSignal = Date.now();
-      if (result.edge)
-        status("请不要让手机侧边朝下，换成正常握持姿势后保持不动。");
+      if (result.edge) status("请竖屏握稳，避免手机侧边朝下。");
       if (result.calibrated) {
         $("calibrate").textContent = $("calibrate-full").textContent =
           "校准归零";
-        status("校准完成。角度连续跟手，停在哪里就保持在哪里。");
+        status("校准完成，左右倾斜试试。");
       }
       if (Number.isFinite(result.angle)) {
         measuredAngle = result.angle!;
@@ -155,15 +154,15 @@ export function mountExperience() {
     async () => {
       if (enabled) {
         pause();
-        status("体感已暂停，可以拖动滑杆。");
+        status("体感已暂停，可拖动滑杆体验。");
         return;
       }
       if (!window.isSecureContext) {
-        status("体感需要安全连接，请打开局域网 HTTPS 地址（8443 端口）。");
+        status("请通过 HTTPS 地址打开页面，再开启体感。");
         return;
       }
       if (!("DeviceMotionEvent" in window)) {
-        status("当前浏览器不支持体感，请在 iPhone Safari 打开，或使用滑杆。");
+        status("当前浏览器不支持体感，请使用 iPhone Safari 或拖动滑杆。");
         return;
       }
       try {
@@ -174,9 +173,7 @@ export function mountExperience() {
           const permission = await MotionEvent.requestPermission();
           if (signal.aborted) return;
           if (permission !== "granted") {
-            status(
-              "未获得体感权限。可使用滑杆，或在 Safari 中重新允许动作与方向访问。",
-            );
+            status("未获得体感权限，请允许动作与方向访问，或拖动滑杆体验。");
             return;
           }
         }
@@ -187,15 +184,11 @@ export function mountExperience() {
         signalTimer = setTimeout(() => {
           if (enabled && !lastSignal) {
             pause();
-            status(
-              "未收到信号：请竖屏拿起手机，并在 Safari 中允许动作与方向访问；也可使用滑杆。",
-            );
+            status("未收到体感信号，请检查动作与方向权限，或拖动滑杆体验。");
           }
         }, 3500);
       } catch {
-        status(
-          "无法开启体感，请使用 Safari 并允许动作与方向访问。手动滑杆仍可使用。",
-        );
+        status("体感开启失败，请用 Safari 重试，或拖动滑杆体验。");
       }
     },
     { signal },
@@ -256,7 +249,7 @@ export function mountExperience() {
   }
   function updateLayoutInfo() {
     const rect = immersiveStage.getBoundingClientRect();
-    $("layout-info").textContent = `版本：全参数精调 23
+    $("layout-info").textContent = `显示信息
 模式：${isStandalone() ? "主屏幕" : "浏览器"}
 屏幕：${screen.width} × ${screen.height}
 页面：${innerWidth} × ${innerHeight}
@@ -337,9 +330,9 @@ export function mountExperience() {
         imageRatio = img.width / img.height;
         renderer.setImage(canvas);
         resizeImage();
-        status("截图已载入，仅在本机显示。点“沉浸体验”让画面铺满屏幕。");
+        status("截图已载入，点击“沉浸体验”查看。");
       } catch {
-        status("无法读取这张图片，请换成 PNG 或 JPEG 截图。");
+        status("图片读取失败，请换一张 PNG 或 JPEG 图片。");
       } finally {
         URL.revokeObjectURL(url);
         (e.target as HTMLInputElement).value = "";
