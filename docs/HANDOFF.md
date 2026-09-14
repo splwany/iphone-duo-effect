@@ -6,16 +6,21 @@
 
 目标设备曾为 iPhone 14 Pro；用户报告 iOS 26.6.2，此版本信息来自用户，未独立核实。模拟的是“截图像停留在底页，手机像磨砂封皮掀开”的视觉错觉。不是折叠手机硬件模型，不控制系统桌面，不跟踪实际观看者或摄像机位置。
 
+## 工程化迁移
+
+已迁移到 Vite + React + TypeScript，原型基线保存在 Git 首次提交 `4fb5729`。
+当前目录与开发命令见 README；下文公式、视觉限制和真机回归清单继续适用。
+
 ## 文件职责与数据流
 
-- `web/index.html`：全部控件、帮助、诊断、PWA metadata。
-- `web/style.css`：响应式预览与沉浸布局；有多轮追加覆盖，勿只读最前面的规则。
-- `web/app.js`：本地导图、参数存储、体感权限、动画平滑、沉浸进出与布局诊断。
-- `web/motion.js`：可单测的 TiltTracker 校准与重力方向估计。
-- `web/render.js`：DepthRenderer，WebGL 2 顶点/片元程序、纹理上传与绘制。
-- `web/sample.svg`、`icon.svg`：随包示例与图标；无用户截图。
-- `web/manifest.webmanifest`：standalone 模式配置，无 service worker。
-- `scripts/serve.py`：新整理的通用开发服务器，与原来绑定特定 IP 的私人脚本不同。
+- `src/components/` 与 `index.html`：全部控件、帮助、诊断、PWA metadata。
+- `src/styles/style.css`：响应式预览与沉浸布局；有多轮追加覆盖，勿只读最前面的规则。
+- `src/engine/experience.ts` 与 `src/config/effects.ts`：本地导图、参数存储、体感权限、动画平滑、沉浸进出与布局诊断。
+- `src/engine/TiltTracker.ts`：可单测的 TiltTracker 校准与重力方向估计。
+- `src/engine/DepthRenderer.ts`：DepthRenderer，WebGL 2 顶点/片元程序、纹理上传与绘制。
+- `public/sample.svg`、`icon.svg`：随包示例与图标；无用户截图。
+- `public/manifest.webmanifest`：standalone 模式配置，无 service worker。
+- `scripts/serve.py`：构建产物 dist/ 的 HTTP/HTTPS 服务器，与原来绑定特定 IP 的私人脚本不同。
 
 DeviceMotion → 扣除可用线性加速度 → 旋转屏幕坐标 → TiltTracker → target ∈ [-1,1] → 指数时间平滑 current → WebGL uniforms → 渲染。
 
@@ -41,7 +46,7 @@ DeviceMotion → 扣除可用线性加速度 → 旋转屏幕坐标 → TiltTrac
 
 所有默认均为 50%，但已保存的非默认值继续保留。按钮“所有效果恢复 50%”重置效果参数，不重置校准、图像或手动角度。
 
-存储：模糊 `fold-blur-strength-v2`，横向拉伸 `fold-horizontal-stretch-v2`，远端内缩 `fold-far-shrink-v2`；其他 `fold-控件ID-v1`，具体以 app.js 绑定为准。模糊旧 10% → 新 50%；旧拉伸 90% → 新 50%；旧内缩 13% → 新 50%。旧值超出新范围会钳制，不能声称所有旧设置完全等效。
+存储：模糊 `fold-blur-strength-v2`，横向拉伸 `fold-horizontal-stretch-v2`，远端内缩 `fold-far-shrink-v2`；其他 `fold-控件ID-v1`，具体以 effects.ts 配置为准。模糊旧 10% → 新 50%；旧拉伸 90% → 新 50%；旧内缩 13% → 新 50%。旧值超出新范围会钳制，不能声称所有旧设置完全等效。
 
 ## 当前渲染公式
 
@@ -87,7 +92,7 @@ TiltTracker 过滤重力幅度 6–14；稳定校准需至少 800 ms / 12 个样
 
 ## 已知限制与下一步
 
-- 没有构建工具、模块拆分或统一参数 schema；字段目前分散在 HTML、绑定、uniform 默认和文档。建议先提取配置表并写中点等价测试。
+- 已增加构建工具、模块拆分、统一参数配置和中点等价测试。渲染器保留独立的原版默认值，测试验证其与配置一致。
 - style.css 有历史覆盖；重构前保存真机基线。
 - 无 WebGL2 时只有静态 CSS 回退，没有同等动画或明确能力提示。
 - 连续 requestAnimationFrame，静止时仍绘制；可后续增加 dirty rendering、后台节流与性能档位。
@@ -109,4 +114,4 @@ TiltTracker 过滤重力幅度 6–14；稳定校准需至少 800 ms / 12 个样
 
 ## 可直接交给下一位开发者的提示
 
-请先读 README.md 与本文件，以 web/ 为唯一源码。维持 23 版所有 50% 的视觉基线，保持无额外变暗、左右体感方向、校准逻辑及已修好的主屏幕布局。一次只修改一个视觉变量，说明验证范围。不得发布私人证书或用户截图；许可证待仓库所有者选择。先运行现有测试，再按真机清单验证修改。
+请先读 README.md 与本文件，以 src/ 为运行源码。维持 23 版所有 50% 的视觉基线，保持无额外变暗、左右体感方向、校准逻辑及已修好的主屏幕布局。一次只修改一个视觉变量，说明验证范围。不得发布私人证书或用户截图；许可证待仓库所有者选择。先运行现有测试，再按真机清单验证修改。

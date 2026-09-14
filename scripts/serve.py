@@ -1,4 +1,4 @@
-"""Development-only static server. Serve web/ and never the repository root."""
+"""Development-only static server. Serve dist/ and never the repository root."""
 from pathlib import Path
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import argparse
@@ -12,7 +12,9 @@ parser.add_argument('--key')
 args = parser.parse_args()
 if bool(args.cert) != bool(args.key):
     parser.error('--cert and --key must be supplied together')
-web = Path(__file__).resolve().parents[1] / 'web'
+web = Path(__file__).resolve().parents[1] / 'dist'
+if not web.is_dir():
+    parser.error('dist/ is missing; run npm run build first')
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *a, **kw):
         super().__init__(*a, directory=str(web), **kw)

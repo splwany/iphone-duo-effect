@@ -1,0 +1,562 @@
+* {
+  box-sizing: border-box;
+}
+html {
+  color-scheme: dark;
+  background: #090b10;
+}
+body {
+  margin: 0;
+  color: #f6f7fb;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  -webkit-tap-highlight-color: transparent;
+}
+button,
+label,
+input,
+summary {
+  touch-action: manipulation;
+}
+button,
+input {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+  color: inherit;
+  border: 0;
+}
+button:focus-visible,
+label:focus-within,
+summary:focus-visible {
+  outline: 2px solid #b2f571;
+  outline-offset: 4px;
+}
+#app {
+  max-width: 1050px;
+  margin: auto;
+  padding: max(20px, env(safe-area-inset-top)) 24px
+    max(24px, env(safe-area-inset-bottom));
+  display: grid;
+  grid-template-columns: 1fr 390px;
+  gap: 40px;
+}
+header {
+  grid-column: 1/-1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 20px;
+  font-weight: 600;
+}
+header small {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #7e8493;
+  margin-left: 12px;
+}
+.mark {
+  color: #b2f571;
+  font-size: 25px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+.quiet {
+  background: none;
+  color: #adb3c2;
+  font-size: 14px;
+  padding: 10px 0;
+}
+.quiet:hover {
+  color: white;
+}
+#stage {
+  position: relative;
+  height: min(72vh, 730px);
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #0e1118;
+  touch-action: none;
+}
+.ambient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, #23313880, transparent 65%);
+  z-index: -1;
+}
+#fold {
+  position: relative;
+  width: min(75%, 300px);
+  aspect-ratio: 393/852;
+  will-change: transform, filter, opacity;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #000;
+}
+.surface {
+  position: absolute;
+  inset: 0;
+  background-image: url("/sample.svg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+.stage-note {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #727b8b;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+.controls {
+  align-self: center;
+}
+.caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+h1 {
+  font-size: 26px;
+  letter-spacing: -0.8px;
+  font-weight: 550;
+  margin: 0;
+}
+#percent {
+  font-size: 14px;
+  color: #b2f571;
+  font-variant-numeric: tabular-nums;
+}
+.intro {
+  color: #a0a7b6;
+  font-size: 14px;
+  margin: 12px 0 28px;
+}
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.upload,
+.primary {
+  min-height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 550;
+  padding: 12px;
+  cursor: pointer;
+}
+.upload {
+  background: #202630;
+  border: 1px solid #333b48;
+}
+.upload span {
+  margin-right: 6px;
+  font-size: 21px;
+  font-weight: 400;
+}
+.primary {
+  background: #b2f571;
+  color: #17210d;
+}
+.primary:hover {
+  background: #c5ff8f;
+}
+#file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+}
+#status {
+  min-height: 44px;
+  line-height: 1.6;
+  color: #959eaf;
+  font-size: 14px;
+  margin: 15px 0 18px;
+}
+.slider-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+}
+#progress {
+  width: 100%;
+  accent-color: #b2f571;
+  margin: 15px 0 5px;
+  height: 28px;
+  cursor: pointer;
+}
+.range-ends {
+  display: flex;
+  justify-content: space-between;
+  color: #757f90;
+  font-size: 13px;
+}
+details {
+  margin-top: 28px;
+  border-top: 1px solid #252b36;
+  padding-top: 20px;
+  color: #929cab;
+  font-size: 14px;
+}
+summary {
+  cursor: pointer;
+  color: #bdc4d0;
+}
+details p {
+  line-height: 1.8;
+}
+footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #657081;
+  margin-top: 30px;
+}
+#exit {
+  display: none;
+  position: absolute;
+  top: max(16px, env(safe-area-inset-top));
+  right: 20px;
+  background: #202630c9;
+  border: 1px solid #ffffff30;
+  border-radius: 30px;
+  padding: 12px 20px;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+body.immersed {
+  overflow: hidden;
+}
+body.immersed #app {
+  padding: 0;
+  display: block;
+}
+body.immersed header,
+body.immersed .controls,
+body.immersed .stage-note,
+body.immersed .ambient {
+  display: none;
+}
+body.immersed #stage {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  min-height: 0;
+  border-radius: 0;
+  background: black;
+}
+body.immersed #fold {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+}
+body.immersed #fold {
+  border-radius: 0;
+}
+body.immersed.show-exit #exit {
+  display: block;
+}
+@media (max-width: 760px) {
+  #app {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: max(14px, env(safe-area-inset-top)) 20px
+      max(24px, env(safe-area-inset-bottom));
+  }
+  header {
+    font-size: 19px;
+  }
+  header small {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    margin-left: 6px;
+  }
+  #stage {
+    height: 41dvh;
+    min-height: 265px;
+    border-radius: 22px;
+  }
+  #fold {
+    height: 85%;
+    width: auto;
+    aspect-ratio: 393/852;
+  }
+  .stage-note {
+    font-size: 12px;
+    bottom: 10px;
+  }
+  .controls {
+    width: 100%;
+  }
+  h1 {
+    font-size: 23px;
+  }
+  .intro {
+    margin: 9px 0 20px;
+  }
+  #status {
+    margin-bottom: 8px;
+  }
+  details {
+    margin-top: 18px;
+  }
+  footer {
+    margin-top: 24px;
+  }
+}
+
+.calibration {
+  width: 100%;
+  padding: 14px;
+  margin: 0 0 20px;
+  background: #25332b;
+  color: #c7ff98;
+  border: 1px solid #506b42;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+#sensitivity {
+  width: 100%;
+  accent-color: #b2f571;
+  height: 28px;
+  margin: 10px 0;
+}
+.sensitivity-note {
+  font-size: 13px;
+  color: #959eaf;
+  margin: 0 0 22px;
+}
+.full-calibrate {
+  display: none;
+  position: absolute;
+  top: max(16px, env(safe-area-inset-top));
+  left: 20px;
+  z-index: 10;
+  background: #202630df;
+  padding: 12px 20px;
+  border: 1px solid #ffffff30;
+  border-radius: 30px;
+  color: #c7ff98;
+}
+body.immersed.show-exit .full-calibrate {
+  display: block;
+}
+
+body.immersed #stage {
+  right: auto;
+  bottom: auto;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+body.immersed #fold {
+  flex: none;
+  max-width: none;
+  max-height: none;
+  transform: none;
+}
+html:has(body.immersed) {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* Immersive content is attached to body, independent of preview layout. */
+body.immersed #stage {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  max-height: none;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  overflow: hidden;
+  display: block;
+  z-index: 1000;
+}
+body.immersed #fold {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  aspect-ratio: auto;
+  border-radius: 0;
+  transform: none;
+}
+@media (display-mode: standalone) {
+  body.immersed #stage {
+    height: 100lvh;
+  }
+}
+
+/* Give the root scrolling surface the same full height as the painting surface. */
+html.standalone-immersive,
+html.standalone-immersive body {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  width: 100%;
+  height: var(--immersive-height, 100vh);
+  min-height: var(--immersive-height, 100vh);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #000;
+}
+html.standalone-immersive body.immersed #stage {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  height: var(--immersive-height, 100vh);
+}
+#layout-info {
+  white-space: pre-wrap;
+  line-height: 1.7;
+  font-size: 13px;
+  color: #aeb8c7;
+}
+
+/* Contain the screenshot in the drawable area until edge-to-edge WebView
+   behavior is verified on the user's iOS version. */
+body.immersed #stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+body.immersed #fold {
+  position: relative;
+  inset: auto;
+  flex: none;
+}
+
+/* Home Screen: paint in the document instead of a fixed viewport layer. */
+html.standalone-immersive {
+  position: static;
+  inset: auto;
+  width: 100%;
+  height: var(--immersive-height);
+  min-height: var(--immersive-height);
+  overflow: hidden;
+}
+html.standalone-immersive body {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: var(--immersive-height);
+  min-height: var(--immersive-height);
+  overflow: visible;
+  margin: 0;
+  padding: 0;
+}
+body.immersed #app {
+  display: none;
+}
+html.standalone-immersive body.immersed #stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: auto;
+  bottom: auto;
+  width: 100%;
+  height: var(--immersive-height);
+  overflow: hidden;
+}
+body.immersed #fold {
+  will-change: auto;
+}
+
+#blur-strength {
+  width: 100%;
+  height: 32px;
+  accent-color: #b2f571;
+  margin: 10px 0;
+  cursor: pointer;
+}
+#blur-value {
+  color: #b2f571;
+  font-variant-numeric: tabular-nums;
+}
+
+#perspective-strength {
+  width: 100%;
+  height: 32px;
+  accent-color: #b2f571;
+  margin: 10px 0;
+  cursor: pointer;
+}
+#perspective-value {
+  color: #b2f571;
+  font-variant-numeric: tabular-nums;
+}
+
+#focal-length {
+  width: 100%;
+  height: 32px;
+  accent-color: #b2f571;
+  margin: 10px 0;
+  cursor: pointer;
+}
+#focal-value {
+  color: #b2f571;
+  font-variant-numeric: tabular-nums;
+}
+
+#horizontal-stretch,
+#far-shrink {
+  width: 100%;
+  height: 32px;
+  accent-color: #b2f571;
+  margin: 10px 0;
+  cursor: pointer;
+}
+#stretch-value,
+#shrink-value {
+  color: #b2f571;
+  font-variant-numeric: tabular-nums;
+}
+
+#advanced-controls input[type="range"] {
+  width: 100%;
+  accent-color: #b2f571;
+  height: 28px;
+  margin: 10px 0;
+}
+#advanced-controls {
+  margin-bottom: 22px;
+}
+#reset-effects {
+  margin-top: 12px;
+}
