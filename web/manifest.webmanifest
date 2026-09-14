@@ -1,0 +1,1 @@
+{"name": "折光 · 左右倾斜体验", "short_name": "折光", "start_url": "./?homescreen=5", "scope": "./", "display": "standalone", "background_color": "#000000", "theme_color": "#090b10", "icons": [{"src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}]}
