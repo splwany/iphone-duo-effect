@@ -40,6 +40,19 @@ React 管理页面结构；每帧绘制及已验证的 Safari 沉浸节点移动
 
 组件卸载或热更新会取消动画、事件订阅和定时器，释放观察器、图片 URL 与 GPU 资源。
 
+## GitHub Pages 部署
+
+仓库使用 `.github/workflows/deploy.yml` 自动测试、构建并部署 `main` 分支。
+首次需在 GitHub 仓库 **Settings → Pages → Source** 选择 **GitHub Actions**。
+成功部署后的目标地址为 `https://splwany.github.io/iphone-duo-effect/`。
+
+Pages 构建使用 `/iphone-duo-effect/` 路径前缀，本地开发仍使用根路径。
+图标、示例、样式和 manifest 均跟随构建路径；仓库改名时同步修改 workflow 的 `--base`。
+每次推送 `main` 自动更新，也可在 Actions 手动运行部署。
+
+手机用 Safari 打开 HTTPS 地址，点“开启体感”并允许动作与方向访问，握稳约 1 秒后体验。
+可通过“分享 → 添加到主屏幕”进入独立应用模式。截图仍仅在手机内处理。
+
 ## 手机上使用
 
 手机与电脑连接同一局域网。HTTP 只能用于页面及手动预览；iPhone 体感需要可信 HTTPS 和用户点击授权。
