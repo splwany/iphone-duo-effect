@@ -67,7 +67,10 @@ export class DepthRenderer {
       // Filter the silhouette with the same footprint as each color sample.
       // The disk then blurs content and coverage together; a fixed hard mask
       // per tap would reproduce the old stepped edge contours.
-      vec2 feather=max(vec2(.75)/viewSize,edgeSoftness*exp2(lod)/(imageSize*fit));
+      // Keep the clear, untilted image intact. The upper half adds visible
+      // feathering as the page tilts; 50% (scale 1) preserves the baseline.
+      float edgeScale=edgeSoftness<=1.?edgeSoftness:1.+(edgeSoftness-1.)*sin(abs(tilt)*1.57079632679);
+      vec2 feather=max(vec2(.75)/viewSize,edgeScale*exp2(lod)/(imageSize*fit));
       vec2 coverage=smoothstep(-feather,feather,p)
         *(1.-smoothstep(vec2(1.)-feather,vec2(1.)+feather,p));
       return textureLod(photo,tex,lod).rgb*coverage.x*coverage.y;

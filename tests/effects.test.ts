@@ -55,3 +55,40 @@ test("storage getter failures also retain default settings", () => {
     Reflect.deleteProperty(globalThis, "localStorage");
   }
 });
+
+test("expanded ranges remain continuous, monotonic and invertible", async () => {
+  const { effectPercent } = await import("../src/config/effects");
+  for (const effect of effects) {
+    let previous = -Infinity;
+    for (let percent = 0; percent <= 100; percent++) {
+      const value = effectValue(effect, percent);
+      assert(Number.isFinite(value) && value >= previous);
+      assert(Math.abs(effectPercent(effect, value) - percent) < 1e-9);
+      previous = value;
+    }
+    assert.equal(effectValue(effect, 0), effect.minimum);
+    assert.equal(effectValue(effect, 100), effect.maximum);
+    assert(Math.abs(effectValue(effect, 50 - 1e-8) - effect.midpoint) < 1e-6);
+    assert(Math.abs(effectValue(effect, 50 + 1e-8) - effect.midpoint) < 1e-6);
+  }
+});
+
+test("previous ranges migrate physical values instead of reusing percentages", () => {
+  for (const effect of effects) {
+    if (!effect.previous) continue;
+    for (const percent of [0, 25, 50, 75, 100]) {
+      const migrated = readPercent(effect, {
+        getItem: (key) =>
+          key === effect.previous?.storageKey ? String(percent) : null,
+      });
+      const expected =
+        effect.previous.minimum +
+        ((effect.previous.maximum - effect.previous.minimum) * percent) / 100;
+      assert(Math.abs(effectValue(effect, migrated) - expected) < 1e-10);
+      const preferred = readPercent(effect, {
+        getItem: (key) => (key === effect.storageKey ? "80" : String(percent)),
+      });
+      assert.equal(preferred, 80);
+    }
+  }
+});

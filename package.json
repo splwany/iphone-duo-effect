@@ -11,7 +11,8 @@
     "test": "node --import tsx --test tests/*.test.ts",
     "format": "prettier --write src tests index.html vite.config.ts tsconfig.json package.json",
     "format:check": "prettier --check src tests index.html vite.config.ts tsconfig.json package.json",
-    "test:browser": "node tests/browser.mjs"
+    "test:browser": "node tests/browser.mjs",
+    "test:parameters": "node tests/parameters.mjs"
   },
   "dependencies": {
     "react": "^19.1.0",

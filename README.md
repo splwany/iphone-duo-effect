@@ -22,6 +22,7 @@ npm run build         # 类型检查并构建 dist/
 npm run preview       # 本地预览构建结果
 npm run format:check  # 格式检查
 npm run test:browser  # 已启动服务且安装 Chrome 后进行浏览器回归
+npm run test:parameters # 开发服务 8765 + Chrome：逐项参数和动态响应验证
 ```
 
 ## 工程结构
@@ -75,6 +76,8 @@ Safari 分享 → 添加到主屏幕 → 从图标打开 → 开启体感 → �
 - 一键恢复默认；沉浸布局与屏幕适配诊断。
 
 ## 开发与交接
+
+- [参数优化记录](docs/PARAMETERS.md)：有效范围、旧设置迁移与视觉验证。
 
 - [完整交接说明](docs/HANDOFF.md)：架构、公式、参数、历史经验、回归清单与下一步。
 - [贡献说明](CONTRIBUTING.md)

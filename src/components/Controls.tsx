@@ -25,7 +25,10 @@ export function Controls() {
       ))}
       <details id="advanced-controls">
         <summary>高级调节</summary>
-        <p>默认值均为 50%，调整后自动保存。</p>
+        <p>
+          默认值均为 50%，调整后自动保存。建议倾斜约 45°–75°
+          观察差别；居中时保持清晰。
+        </p>
         {effects.slice(3).map((effect) => (
           <EffectSlider key={effect.id} effect={effect} />
         ))}
